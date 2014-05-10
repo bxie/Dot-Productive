@@ -254,7 +254,7 @@ X -Figure out how to determine which shapes are being touched (Container.getObje
 X -Associate scores/attributes with shapes (type associates with points or energy)
 X -Energy and time measured (ticker?)
  -Time alive decreases when main and other obj touching
- -Remove obj when no more timeAlive
+X -Remove obj when no more timeAlive
  -Have "main" hover between points (speed dependent on energy)
 X -Point counter
 */
