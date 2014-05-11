@@ -20,6 +20,8 @@ function init(){
 	var step_size = 10.0;
 	var goal = null;
 
+	var end_game = false; //true if bed clicked on
+
 	/*********************************************
 	LABELS
 	*********************************************/
@@ -110,6 +112,7 @@ function init(){
 
 	//Sprite we control
 	var main = createCircle("blue", 30, 40, stage.canvas.height/2);
+	main.alpha = 0.5;
 	stage.addChild(main);
 
 	//end sprite
@@ -119,52 +122,82 @@ function init(){
 	bed_container.on("click", function(evt){
 		console.log("GAME OVER!");
 	});
-	stage.addChild(bed);
+	var bed_container = new createjs.Container();
+	bed_container.addChild(bed);
+	bed_container.on("click", function(evt){
+		console.log("Clicked on end!");
+		is_moving = true;
+			//goal = dragger.getObjectUnderPoint();
+			goal = evt.target;
+			console.log(evt.target.x);
+			console.log(goal.x);
+
+			if (main.x > goal.x){ //has to go to left
+				moving_left = true;
+			}
+			else{
+				moving_left = false;
+			}
+			slope = (goal.y-main.y)/(goal.x-main.x); //origin in upper left!
+
+			stage.update();
+
+		end_game=true;
+		//TODO: End game goes here!
+	});
+	stage.addChild(bed_container);
 
     stage.update();
 
     createjs.Ticker.on("tick", tick);
+    createjs.Ticker.setPaused(false);
 	function tick(event) {
-		//handles gliding between objects
-		if(is_moving==true && !!goal){
-			console.log("is moving and goal");
-			if (has_arrived()==true){
-				is_moving==false;
-				if(goal.timeAlive<0.0001){
-					//productive object
-					if(goal.isWork==true){
-						incrementScore()
-						//console.log("GOT A POINT! Now at "+score);
-					}
-					//energy object
-					else{
-						//console.log("More Energy!");
-						updateEnergy(15);
-					}			
-				}	
-				console.log("About to remove:");
-				dragger.removeChild(goal);	
-				console.log(goal);
-				goal = null;
+		console.log(createjs.Ticker.getPaused());
+		if(createjs.Ticker.getPaused()==false){ // replace with createjs.Ticker.getPaused()==true
+			//handles gliding between objects
+			if(is_moving==true && !!goal){
+				console.log("is moving and goal");
+				if (has_arrived()==true){
+					is_moving==false;
+					if(goal.timeAlive<1.0){
+						//productive object
+						if(goal.isWork==true){
+							incrementScore()
+							//console.log("GOT A POINT! Now at "+score);
+						}
+						//energy object
+						else{
+							//console.log("More Energy!");
+							updateEnergy(15);
+						}			
+					}	
+					console.log("About to remove:");
+					dragger.removeChild(goal);	
+					console.log(goal);
+					goal = null;
+				}
+				else{
+					var x_inc = calcXInc();
+					var sign = 1.0; //+1 or -1
+					if(moving_left==true){sign=-1.0;}
+					//console.log("MOVING!"+slope);
+					main.x= main.x+sign*x_inc;
+					main.y=main.y+sign*x_inc*slope;
+				}
+				if(end_game && goal==null){
+					createjs.Ticker.setPaused(true);
+				}
 			}
-			else{
-				var x_inc = calcXInc();
-				var sign = 1.0; //+1 or -1
-				if(moving_left==true){sign=-1.0;}
-				//console.log("MOVING!"+slope);
-				main.x= main.x+sign*x_inc;
-				main.y=main.y+sign*x_inc*slope;
-			}
+
+			var delta = getTimeInSec() - prev_time;
+			prev_time = getTimeInSec();
+			gameTime = gameTime - delta;
+			energy = (energy - delta) * energy_multiplier;
+			timeLabel.text = "Time Left: "+ Math.round(gameTime);
+			energyLabel.text = "Energy: "+Math.round(energy);
+
+			stage.update(event);
 		}
-
-		var delta = getTimeInSec() - prev_time;
-		prev_time = getTimeInSec();
-		gameTime = gameTime - delta;
-		energy = (energy - delta) * energy_multiplier;
-		timeLabel.text = "Time Left: "+ Math.round(gameTime);
-		energyLabel.text = "Energy: "+Math.round(energy);
-
-		stage.update(event);
 	};
 
     //makes a shape clickable
@@ -272,7 +305,7 @@ function init(){
 		var max_size = 80; //max bubble size
 		var min_size = 10;
 		//default args
-		size = size || Math.round(Math.random()*(max_size-min_size)+min_size); //size between 10 and 100
+		size = size || Math.round( 	Math.random()*(max_size-min_size)+min_size); //size between 10 and 100
 		timeAlive = timeAlive || 5.0;
 
 		rand_coord = get_random_location();
