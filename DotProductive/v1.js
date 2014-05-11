@@ -119,9 +119,7 @@ function init(){
 	var bed = createCircle("green", 30, stage.canvas.width-40, stage.canvas.height/2);
 	var bed_container = new createjs.Container();
 	bed_container.addChild(bed);
-	bed_container.on("click", function(evt){
-		console.log("GAME OVER!");
-	});
+
 	var bed_container = new createjs.Container();
 	bed_container.addChild(bed);
 	bed_container.on("click", function(evt){
@@ -142,8 +140,7 @@ function init(){
 
 			stage.update();
 
-		end_game=true;
-		//TODO: End game goes here!
+		end_game = true;
 	});
 	stage.addChild(bed_container);
 
@@ -151,12 +148,23 @@ function init(){
 
     createjs.Ticker.on("tick", tick);
     createjs.Ticker.setPaused(false);
+	
+	//called every time step
 	function tick(event) {
-		console.log(createjs.Ticker.getPaused());
+		//console.log(createjs.Ticker.getPaused());
+
+		//paused if game ends (get to bed, out of energy, time)
 		if(createjs.Ticker.getPaused()==false){ // replace with createjs.Ticker.getPaused()==true
+			//ensures time and energy are both > 0, trigger end game
+			if(energy<0.0 || prev_time<0.0){
+				end_game = true;
+				goal = null;
+			}
+
 			//handles gliding between objects
 			if(is_moving==true && !!goal){
-				console.log("is moving and goal");
+				//console.log("is moving and goal");
+				//at goal object. updates points or energy
 				if (has_arrived()==true){
 					is_moving==false;
 					if(goal.timeAlive<1.0){
@@ -171,11 +179,12 @@ function init(){
 							updateEnergy(15);
 						}			
 					}	
-					console.log("About to remove:");
+					//console.log("About to remove:");
 					dragger.removeChild(goal);	
-					console.log(goal);
+					//console.log(goal);
 					goal = null;
 				}
+				//calculate travel direction
 				else{
 					var x_inc = calcXInc();
 					var sign = 1.0; //+1 or -1
@@ -184,9 +193,10 @@ function init(){
 					main.x= main.x+sign*x_inc;
 					main.y=main.y+sign*x_inc*slope;
 				}
-				if(end_game && goal==null){
-					createjs.Ticker.setPaused(true);
-				}
+			}
+			//end game: if main has arrived at bed 
+			if(end_game && goal==null){
+				createjs.Ticker.setPaused(true);
 			}
 
 			var delta = getTimeInSec() - prev_time;
@@ -206,11 +216,12 @@ function init(){
 		dragger.addChild(shape);
 
 		dragger.on("click",function(evt){
+			end_game=false; //fix bug where game ends when click on bed then click away
 			is_moving = true;
 			//goal = dragger.getObjectUnderPoint();
 			goal = evt.target;
-			console.log(evt.target.x);
-			console.log(goal.x);
+			console.log(evt.target);
+			//console.log(goal.x);
 
 			if (main.x > goal.x){ //has to go to left
 				moving_left = true;
@@ -255,14 +266,14 @@ function init(){
 		stage.update();
 	}
 
-	//Calculates energy loss
-	//Energy Loss = (dist)*(energy_dist_multiplier)*(tiredness)
-	//tiredness = log(1+MAX_ENERGY-energy)+1
-	function calc_travel_energy(dist){
-		tiredness = Math.log(1+ (MAX_ENERGY-energy)/MAX_ENERGY)+1; 
-		console.log(tiredness);
-		return dist * energy_dist_multiplier*tiredness;
-	}
+	// //Calculates energy loss
+	// //Energy Loss = (dist)*(energy_dist_multiplier)*(tiredness)
+	// //tiredness = log(1+MAX_ENERGY-energy)+1
+	// function calc_travel_energy(dist){
+	// 	tiredness = Math.log(1+ (MAX_ENERGY-energy)/MAX_ENERGY)+1; 
+	// 	console.log(tiredness);
+	// 	return dist * energy_dist_multiplier*tiredness;
+	// }
 
 	//gets location within canvas
 	function get_random_location(){
