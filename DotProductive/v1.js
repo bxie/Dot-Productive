@@ -269,7 +269,7 @@ function init(){
 
 	//Increase energy by delta
 	function updateEnergy(delta){
-		energy = energy + delta;
+		energy = Math.min(MAX_ENERGY, energy + delta); //energy never exceeds max
 		energyLabel.text = "Energy: "+energy;
 		stage.update();
 	}
