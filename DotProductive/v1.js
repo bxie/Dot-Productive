@@ -21,6 +21,8 @@ function init(){
 	var goal = null;
 
 	var end_game = false; //true if bed clicked on
+	var time_alive_inc = 3; //must be >0
+	var scale_factor = 0.4 // between 0 and 1 not inclusive
 
 	/*********************************************
 	LABELS
@@ -111,7 +113,7 @@ function init(){
 	stage.mouseMoveOutside = true;
 
 	//Sprite we control
-	var main = createCircle("blue", 30, 40, stage.canvas.height/2);
+	var main = createCircle("blue", 30, 40, stage.canvas.height/2, 0.0);
 	main.alpha = 0.5;
 	stage.addChild(main);
 
@@ -127,6 +129,7 @@ function init(){
 		is_moving = true;
 			//goal = dragger.getObjectUnderPoint();
 			goal = evt.target;
+			goal.timeAlive = 0.0;
 			console.log(evt.target.x);
 			console.log(goal.x);
 
@@ -156,7 +159,7 @@ function init(){
 		//paused if game ends (get to bed, out of energy, time)
 		if(createjs.Ticker.getPaused()==false){ // replace with createjs.Ticker.getPaused()==true
 			//ensures time and energy are both > 0, trigger end game
-			console.log(prev_time);
+			//console.log(prev_time);
 			if(energy<0.0 || prev_time>TOTAL_TIME){
 				console.log("OUT OF TIME OR ENERGY!");
 				createjs.Ticker.setPaused(true)
@@ -166,7 +169,7 @@ function init(){
 			if(is_moving==true && !!goal){
 				//console.log("is moving and goal");
 				//at goal object. updates points or energy
-				if (has_arrived()==true){
+				if(has_arrived()==true){
 					is_moving==false;
 					if(goal.timeAlive<1.0){
 						//productive object
@@ -177,14 +180,25 @@ function init(){
 						//energy object
 						else{
 							//console.log("More Energy!");
-							updateEnergy(15);
-						}			
+							//updateEnergy(15);
+						}
+						//console.log("About to remove:");
+						dragger.removeChild(goal);	
+						goal = null;			
+					}
+					else{
+						console.log("shrinking!");
+						if(goal.isWork){
+							updateEnergy(-1);
+						}
+						else{
+							updateEnergy(1.5)
+						}
+						goal.timeAlive -= time_alive_inc;
+						goal.scaleX=goal.timeAlive/goal.totalTimeAlive;
+						goal.scaleY=goal.timeAlive/goal.totalTimeAlive;
 					}	
-					//console.log("About to remove:");
-					dragger.removeChild(goal);	
-					//console.log(goal);
-					goal = null;
-				}
+				}	
 				//calculate travel direction
 				else{
 					var x_inc = calcXInc();
@@ -221,7 +235,7 @@ function init(){
 			is_moving = true;
 			//goal = dragger.getObjectUnderPoint();
 			goal = evt.target;
-			console.log(evt.target);
+			//console.log(evt.target);
 			//console.log(goal.x);
 
 			if (main.x > goal.x){ //has to go to left
@@ -277,7 +291,7 @@ function init(){
 	// }
 
 	//gets location within canvas
-	function get_random_location(){
+	function get_random_location(){setTimeout(function() {}, 10);
 		var padding = 50; //stay at least 50 px away from each edge
 		x = Math.round(Math.random()*(stage.canvas.width-padding*2)+padding);
 		y = Math.round(Math.random()*(stage.canvas.height-padding*2)+padding);
@@ -299,12 +313,13 @@ function init(){
 		size = size || 50;
 		xPos = xPos || 100;
 		yPos = yPos || 100;
-		timeAlive = timeAlive || 5.0;
+		timeAlive = timeAlive || size;
 
 		circle.graphics.beginFill(color).drawCircle(0,0,size);
 		circle.x = xPos;
 		circle.y = yPos;
-		circle.timeAlive = 0.0; //TODO: Change for real game
+		circle.timeAlive = size; //TODO: Change for real game
+		circle.totalTimeAlive = size;
 
 		if(isProductive){ circle.isWork=true; }
 		else{ circle.isWork = false; }
@@ -323,7 +338,7 @@ function init(){
 		rand_coord = get_random_location();
 		x = rand_coord[0];
 		y = rand_coord[1];
-		return createCircle(color, size, x, y, timeAlive, isProductive);
+		return createCircle(color, size, x, y, size, isProductive);
 	}
 
 	//makes it so travel amount specified by "step_size" variable each time step
