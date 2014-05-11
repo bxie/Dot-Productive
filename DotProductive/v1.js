@@ -12,6 +12,18 @@ function init(){
 	var energy_multiplier = 1.0; //At each second, energy drops this amount
 	var energy_dist_multiplier = 0.05; //for calculating energy loss from travel distance
 
+	//for gliding
+	var is_moving = false;
+	var moving_left = false;
+	var threshold = 5.0; //to account for noise in the system
+	var slope = -1.0;
+	var step_size = 10.0;
+	var goal = null;
+
+	/*********************************************
+	LABELS
+	*********************************************/
+
 	//Time Label
 	timeLabel = stage.addChild(new createjs.Text("Time: "+prev_time, "14px monospace", "#000"));
 	timeLabel.lineHeight = 15;
@@ -33,20 +45,11 @@ function init(){
 	scoreLabel.x = 350;
 	scoreLabel.y = 10;
 
-	//updates time, energy
-	createjs.Ticker.on("tick", tick);
-	function tick(event) {
-		var delta = getTimeInSec() - prev_time;
-		prev_time = getTimeInSec();
-		gameTime = gameTime - delta;
-		energy = (energy - delta) * energy_multiplier;
-		timeLabel.text = "Time Left: "+ Math.round(gameTime);
-		energyLabel.text = "Energy: "+Math.round(energy);
+	/*********************************************
+	ADDING SHAPES
+	*********************************************/
 
-		stage.update(event);
-	};
 
-    //ADDING SHAPES
     var rand_x = get_random_location();
     var rand_y = rand_x[1];
     var rand_x = rand_x[0];
@@ -120,49 +123,90 @@ function init(){
 
     stage.update();
 
+    createjs.Ticker.on("tick", tick);
+	function tick(event) {
+		//handles gliding between objects
+		if(is_moving==true && !!goal){
+			console.log("is moving and goal");
+			if (has_arrived()==true){
+				is_moving==false;
+				if(goal.timeAlive<0.0001){
+					//productive object
+					if(goal.isWork==true){
+						incrementScore()
+						//console.log("GOT A POINT! Now at "+score);
+					}
+					//energy object
+					else{
+						//console.log("More Energy!");
+						updateEnergy(15);
+					}			
+				}	
+				console.log("About to remove:");
+				dragger.removeChild(goal);	
+				console.log(goal);
+				goal = null;
+			}
+			else{
+				var x_inc = calcXInc();
+				var sign = 1.0; //+1 or -1
+				if(moving_left==true){sign=-1.0;}
+				//console.log("MOVING!"+slope);
+				main.x= main.x+sign*x_inc;
+				main.y=main.y+sign*x_inc*slope;
+			}
+		}
+
+		var delta = getTimeInSec() - prev_time;
+		prev_time = getTimeInSec();
+		gameTime = gameTime - delta;
+		energy = (energy - delta) * energy_multiplier;
+		timeLabel.text = "Time Left: "+ Math.round(gameTime);
+		energyLabel.text = "Energy: "+Math.round(energy);
+
+		stage.update(event);
+	};
+
     //makes a shape clickable
     function createClickable(shape){
-		var dragger = new createjs.Container();
+		// var dragger = new createjs.Container();
 		dragger.addChild(shape);
 
 		dragger.on("click",function(evt){
-			var oldX = main.x;
-			var oldY = main.y;
-			main.x = evt.stageX;
-			main.y = evt.stageY;
+			is_moving = true;
+			//goal = dragger.getObjectUnderPoint();
+			goal = evt.target;
+			console.log(evt.target.x);
+			console.log(goal.x);
 
-			console.log(calcDistance(oldX, oldY, main.x, main.y));
+			if (main.x > goal.x){ //has to go to left
+				moving_left = true;
+			}
+			else{
+				moving_left = false;
+			}
+			slope = (goal.y-main.y)/(goal.x-main.x); //origin in upper left!
+
+			//console.log(calcDistance(oldX, oldY, main.x, main.y));
 
 			//calculating and updating energy loss from travelling
-			dist = calcDistance(oldX, oldY, main.x, main.y);
-			e_delta = -1.0 * calc_travel_energy(dist);
-			console.log(e_delta);
-			updateEnergy(e_delta);
-
-			target = dragger.getObjectUnderPoint();
-			if(target.timeAlive<0.0001){
-				//productive object
-				if(target.isWork==true){
-					incrementScore()
-					console.log("GOT A POINT! Now at "+score);
-				}
-				//energy object
-				else{
-					console.log("More Energy!");
-					updateEnergy(15);
-				}
-				console.log("About to remove "+target);
-				dragger.removeChild(target);				
-			}
-
-
-			console.log(target);
+			// dist = calcDistance(oldX, oldY, main.x, main.y);
+			// e_delta = -1.0 * calc_travel_energy(dist);
+			// console.log(e_delta);
+			// updateEnergy(e_delta);			
 
 			stage.update();
 		});
 
 		return dragger;
 	}
+
+	//determines if main has reached destination
+	function has_arrived(){
+		return (Math.abs(main.x - goal.x) < threshold && 
+			Math.abs(main.y - goal.y) < threshold)
+	}
+
 
 	//Increase energy by delta
 	function updateEnergy(delta){
@@ -192,7 +236,7 @@ function init(){
 		var padding = 50; //stay at least 50 px away from each edge
 		x = Math.round(Math.random()*(stage.canvas.width-padding*2)+padding);
 		y = Math.round(Math.random()*(stage.canvas.height-padding*2)+padding);
-		console.log ([x,y]);
+		// console.log ([x,y]);
 		return [x,y]
 
 	};
@@ -236,6 +280,12 @@ function init(){
 		y = rand_coord[1];
 		return createCircle(color, size, x, y, timeAlive, isProductive);
 	}
+
+	//makes it so travel amount specified by "step_size" variable each time step
+	// x_inc = sqrt(step^2 / (1+slope)^2)
+	function calcXInc(){
+		return Math.sqrt(Math.pow(step_size,2) / (1+Math.pow(slope, 2)));
+	};
 };
 
 function getTimeInSec(){
