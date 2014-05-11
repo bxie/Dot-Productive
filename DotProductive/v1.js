@@ -9,7 +9,7 @@ function init(){
 	var score = 0;
 	//var energy = Math.random()*MAX_ENERGY/2 + MAX_ENERGY/50;
 	var energy = 100;
-	var energy_multiplier = 1.0; //At each second, energy drops this amount
+	var energy_multiplier = 1.5; //At each second, energy drops this amount
 	var energy_dist_multiplier = 0.05; //for calculating energy loss from travel distance
 
 	//for gliding
@@ -156,9 +156,10 @@ function init(){
 		//paused if game ends (get to bed, out of energy, time)
 		if(createjs.Ticker.getPaused()==false){ // replace with createjs.Ticker.getPaused()==true
 			//ensures time and energy are both > 0, trigger end game
-			if(energy<0.0 || prev_time<0.0){
-				end_game = true;
-				goal = null;
+			console.log(prev_time);
+			if(energy<0.0 || prev_time>TOTAL_TIME){
+				console.log("OUT OF TIME OR ENERGY!");
+				createjs.Ticker.setPaused(true)
 			}
 
 			//handles gliding between objects
@@ -202,7 +203,7 @@ function init(){
 			var delta = getTimeInSec() - prev_time;
 			prev_time = getTimeInSec();
 			gameTime = gameTime - delta;
-			energy = (energy - delta) * energy_multiplier;
+			energy = energy - delta*energy_multiplier;
 			timeLabel.text = "Time Left: "+ Math.round(gameTime);
 			energyLabel.text = "Energy: "+Math.round(energy);
 
