@@ -1,6 +1,6 @@
 function init(){
-	var MAX_ENERGY = 100.0;
-	var TOTAL_TIME = 100.0;
+	var MAX_ENERGY = 50.0;
+	var TOTAL_TIME = 45.0;
 
     var stage = new createjs.Stage("demoCanvas");
 	var dragger = new createjs.Container();
@@ -8,8 +8,8 @@ function init(){
 	var	prev_time = getTimeInSec(); //time of previous tick
 	var score = 0;
 	//var energy = Math.random()*MAX_ENERGY/2 + MAX_ENERGY/50;
-	var energy = 100;
-	var energy_multiplier = 1.0; //At each second, energy drops this amount
+	var energy = 50;
+	var energy_multiplier = 1.5; //At each second, energy drops this amount
 	var energy_dist_multiplier = 0.05; //for calculating energy loss from travel distance
 
 	//for gliding
@@ -20,12 +20,16 @@ function init(){
 	var step_size = 10.0;
 	var goal = null;
 
+	var end_game = false; //true if bed clicked on
+	var time_alive_inc = 0.1; //must be >0
+	var scale_factor = 0.4 // between 0 and 1 not inclusive
+
 	/*********************************************
 	LABELS
 	*********************************************/
 
 	//Time Label
-	timeLabel = stage.addChild(new createjs.Text("Time: "+prev_time, "14px monospace", "#000"));
+	timeLabel = stage.addChild(new createjs.Text("Time Left: "+prev_time, "14px monospace", "#000"));
 	timeLabel.lineHeight = 15;
 	timeLabel.textBaseline = "top"
 	timeLabel.x = 10;
@@ -45,14 +49,14 @@ function init(){
 	scoreLabel.x = 350;
 	scoreLabel.y = 10;
 
-	/*********************************************
-	Sprite Data
-	*********************************************/
-
-    user_spritedata = {images: ["user32.png"], frames:{width:32, height:32}};
-    sleep_spritedata = {images: ["sleep32.png"], frames:{width:32, height:32}};
-    work_spritedata = {images: ["linedpaperpencil32.png"], frames:{width:32, height:32}};
-    play_spritedata = {images: ["cardgame32.png"], frames:{width:32, height:32}};
+	user_spritedata = {images: ["user32.png"], frames:{width:32, height:32},
+		animations: {user:0}};
+    sleep_spritedata = {images: ["sleep32.png"], frames:{width:32, height:32},
+		animations: {sleep:0}};
+    work_spritedata = {images: ["work.jpg"], frames:{width:100, height:100},
+		animations: {econ:0, speech:1, hw:2, essay:3, pset:4, preso:5, pset2:6, thing:7, email:8, project:9}};
+    play_spritedata = {images: ["fun.jpg"], frames:{width:100, height:100},
+		animations: {concert:0, travel:1, shop:2, game:3, date:4, coffee:5, party:6}};
     var userSpriteSheet  = new createjs.SpriteSheet(user_spritedata);
     var sleepSpriteSheet  = new createjs.SpriteSheet(sleep_spritedata);
     var workSpriteSheet  = new createjs.SpriteSheet(work_spritedata);
@@ -63,56 +67,28 @@ function init(){
 	*********************************************/
 
 
-    var red1 = createRandomSprite(playSpriteSheet, 1, 0.0, false);
-    var red2 = createRandomSprite(playSpriteSheet, 2, 0.0, false);
-    var red3 = createRandomSprite(playSpriteSheet, 1.5, 0.0, false);
-    var red4 = createRandomSprite(playSpriteSheet, 1, 0.0, false);
-    var red5 = createRandomSprite(playSpriteSheet, null, 0.0, false);
-    var red6 = createRandomSprite(playSpriteSheet, null, 0.0, false);
-    var red7 = createRandomSprite(playSpriteSheet, null, 0.0, false);
-    var red8 = createRandomSprite(playSpriteSheet, null, 0.0, false);
-    var red9 = createRandomSprite(playSpriteSheet, null, 0.0, false);
+    var red1 = createRandomSprite(playSpriteSheet, "party", null, 0.0, false);
+    var red2 = createRandomSprite(playSpriteSheet,"shop", null, 0.0, false);
+    var red3 = createRandomSprite(playSpriteSheet,"concert", null, 0.0, false);
+    var red4 = createRandomSprite(playSpriteSheet,"travel", null, 0.0, false);
+    var red5 = createRandomSprite(playSpriteSheet,"game", null, 0.0, false);
+    var red6 = createRandomSprite(playSpriteSheet,"game", null, 0.0, false);
+    var red7 = createRandomSprite(playSpriteSheet,"date", null, 0.0, false);
+    var red8 = createRandomSprite(playSpriteSheet,"coffee", null, 0.0, false);
+    var red9 = createRandomSprite(playSpriteSheet,"party", null, 0.0, false);
 
-    var blk1 = createRandomSprite(workSpriteSheet, null, 0.0, true);
-    var blk2 = createRandomSprite(workSpriteSheet, null, 0.0, true);
-    var blk3 = createRandomSprite(workSpriteSheet, 1, 0.0, true);
-    var blk4 = createRandomSprite(workSpriteSheet, 1, 0.0, true);
-    var blk5 = createRandomSprite(workSpriteSheet, 3, 0.0, true);
-    var blk6 = createRandomSprite(workSpriteSheet, 1, 0.0, true);
-    var blk7 = createRandomSprite(workSpriteSheet, 1, 0.0, true);
-    var blk8 = createRandomSprite(workSpriteSheet, 1, 0.0, true);
-    var blk9 = createRandomSprite(workSpriteSheet, 1, 0.0, true);
-    var blk10 = createRandomSprite(workSpriteSheet, 1, 0.0, true);
-
-	/*********************************************
-	ADDING SHAPES
-	*********************************************/
+    var blk1 = createRandomSprite(workSpriteSheet, "hw", null, 0.0, true);
+    var blk2 = createRandomSprite(workSpriteSheet, "pset",null, 0.0, true);
+    var blk3 = createRandomSprite(workSpriteSheet, "essay",null, 0.0, true);
+    var blk4 = createRandomSprite(workSpriteSheet, "email",null, 0.0, true);
+    var blk5 = createRandomSprite(workSpriteSheet, "project",null, 0.0, true);
+    var blk6 = createRandomSprite(workSpriteSheet, "pset2",null, 0.0, true);
+    var blk7 = createRandomSprite(workSpriteSheet, "email",null, 0.0, true);
+    var blk8 = createRandomSprite(workSpriteSheet, "email",null, 0.0, true);
+    var blk9 = createRandomSprite(workSpriteSheet, "email",null, 0.0, true);
+    var blk10 = createRandomSprite(workSpriteSheet, "preso",null, 0.0, true);
 
 
-    var rand_x = get_random_location();
-    var rand_y = rand_x[1];
-    var rand_x = rand_x[0];
-
-    // var red1 = createRandomCircle("red", null, 0.0, false);
-    // var red2 = createRandomCircle("red", 25, 0.0, false);
-    // var red3 = createRandomCircle("red", null, 0.0, false);
-    // var red4 = createRandomCircle("red", null, 0.0, false);
-    // var red5 = createRandomCircle("red", 25, 0.0, false);
-    // var red6 = createRandomCircle("red", null, 0.0, false);
-    // var red7 = createRandomCircle("red", null, 0.0, false);
-    // var red8 = createRandomCircle("red", 25, 0.0, false);
-    // var red9 = createRandomCircle("red", null, 0.0, false);
-    
-    // var blk1 = createRandomCircle("black", 25, 0.0, true);
-    // var blk2 = createRandomCircle("black", null, 0.0, true);
-    // var blk3 = createRandomCircle("black", null, 0.0, true);
-    // var blk4 = createRandomCircle("black", null, 0.0, true);
-    // var blk5 = createRandomCircle("black", 25, 0.0, true);
-    // var blk6 = createRandomCircle("black", 25, 0.0, true);
-    // var blk7 = createRandomCircle("black", null, 0.0, true);
-    // var blk8 = createRandomCircle("black", null, 0.0, true);
-    // var blk9 = createRandomCircle("black", null, 0.0, true);
-    // var blk10 = createRandomCircle("black", 25, 0.0, true);
  
 
     shapes = {
@@ -144,70 +120,124 @@ function init(){
     }   
 
 
-
     //MOUSE
 	stage.mouseMoveOutside = true;
 
 	//Sprite we control
-	// var main = createCircle("blue", 30, 40, stage.canvas.height/2);
-	// stage.addChild(main);
-	var main = createSprite(userSpriteSheet, 40, stage.canvas.height/2);
+	var main = createSprite(userSpriteSheet, "user", 40, stage.canvas.height/2);
+	main.alpha = 0.5;
 	stage.addChild(main);
 
 	//end sprite
-	// var bed = createCircle("green", 30, stage.canvas.width-40, stage.canvas.height/2);
- 	var bed = createSprite(sleepSpriteSheet, stage.canvas.width-40, stage.canvas.height/2);
+ 	var bed = createSprite(sleepSpriteSheet, "sleep", stage.canvas.width-40, stage.canvas.height/2);
+	var bed_container = new createjs.Container();
+	bed_container.addChild(bed);
+
 	var bed_container = new createjs.Container();
 	bed_container.addChild(bed);
 	bed_container.on("click", function(evt){
-		console.log("GAME OVER!");
+		console.log("Clicked on end!");
+		is_moving = true;
+			//goal = dragger.getObjectUnderPoint();
+			goal = evt.target;
+			goal.timeAlive = 0.0;
+			console.log(evt.target.x);
+			console.log(goal.x);
+
+			if (main.x > goal.x){ //has to go to left
+				moving_left = true;
+			}
+			else{
+				moving_left = false;
+			}
+			slope = (goal.y-main.y)/(goal.x-main.x); //origin in upper left!
+
+			stage.update();
+
+		end_game = true;
 	});
-	stage.addChild(bed);
+	stage.addChild(bed_container);
 
     stage.update();
 
     createjs.Ticker.on("tick", tick);
+    createjs.Ticker.setPaused(false);
+	
+	//called every time step
 	function tick(event) {
-		//handles gliding between objects
-		if(is_moving==true && !!goal){
-			console.log("is moving and goal");
-			if (has_arrived()==true){
-				is_moving==false;
-				if(goal.timeAlive<0.0001){
-					//productive object
-					if(goal.isWork==true){
-						incrementScore()
-						//console.log("GOT A POINT! Now at "+score);
+		//console.log(createjs.Ticker.getPaused());
+
+		//paused if game ends (get to bed, out of energy, time)
+		if(createjs.Ticker.getPaused()==false){ // replace with createjs.Ticker.getPaused()==true
+			//ensures time and energy are both > 0, trigger end game
+			//console.log(prev_time);
+			if(energy<0.0 || prev_time>TOTAL_TIME){
+				console.log("OUT OF TIME OR ENERGY!");
+				scoreLabel.text = "Score: "+ score + "     ~OUT OF TIME OR ENERGY!~";
+				stage.update();
+				createjs.Ticker.setPaused(true)
+			}
+
+			//handles gliding between objects
+			if(is_moving==true && !!goal){
+				//console.log("is moving and goal");
+				//at goal object. updates points or energy
+				if(has_arrived()==true){
+					is_moving==false;
+					if(goal.timeAlive<0.5){
+						//productive object
+						if(goal.isWork==true){
+							incrementScore()
+							//console.log("GOT A POINT! Now at "+score);
+						}
+						//energy object
+						else{
+							//console.log("More Energy!");
+							//updateEnergy(15);
+						}
+						//console.log("About to remove:");
+						dragger.removeChild(goal);	
+						goal = null;			
 					}
-					//energy object
 					else{
-						//console.log("More Energy!");
-						updateEnergy(15);
-					}			
+						console.log("shrinking!");
+						if(goal.isWork){
+							updateEnergy(-1);
+						}
+						else{
+							updateEnergy(1.5)
+						}
+						goal.timeAlive -= time_alive_inc;
+						goal.scaleX=goal.timeAlive;
+						goal.scaleY=goal.timeAlive;
+					}	
 				}	
-				console.log("About to remove:");
-				dragger.removeChild(goal);	
-				console.log(goal);
-				goal = null;
+				//calculate travel direction
+				else{
+					var x_inc = calcXInc();
+					var sign = 1.0; //+1 or -1
+					if(moving_left==true){sign=-1.0;}
+					//console.log("MOVING!"+slope);
+					main.x= main.x+sign*x_inc;
+					main.y=main.y+sign*x_inc*slope;
+				}
 			}
-			else{
-				var x_inc = calcXInc();
-				var sign = 1.0; //+1 or -1
-				if(moving_left==true){sign=-1.0;}
-				//console.log("MOVING!"+slope);
-				main.x= main.x+sign*x_inc;
-				main.y=main.y+sign*x_inc*slope;
+			//end game: if main has arrived at bed 
+			if(end_game && goal==null){
+				scoreLabel.text = "Final Score: "+ score + "   Good Night!";
+				stage.update();
+				createjs.Ticker.setPaused(true);
 			}
+
+			var delta = getTimeInSec() - prev_time;
+			prev_time = getTimeInSec();
+			gameTime = gameTime - delta;
+			energy = energy - delta*energy_multiplier;
+			timeLabel.text = "Time Left: "+ Math.round(gameTime);
+			energyLabel.text = "Energy: "+Math.round(energy);
+
+			stage.update(event);
 		}
-
-		var delta = getTimeInSec() - prev_time;
-		prev_time = getTimeInSec();
-		gameTime = gameTime - delta;
-		energy = (energy - delta) * energy_multiplier;
-		timeLabel.text = "Time Left: "+ Math.round(gameTime);
-		energyLabel.text = "Energy: "+Math.round(energy);
-
-		stage.update(event);
 	};
 
     //makes a shape clickable
@@ -216,11 +246,12 @@ function init(){
 		dragger.addChild(shape);
 
 		dragger.on("click",function(evt){
+			end_game=false; //fix bug where game ends when click on bed then click away
 			is_moving = true;
 			//goal = dragger.getObjectUnderPoint();
 			goal = evt.target;
-			console.log(evt.target.x);
-			console.log(goal.x);
+			//console.log(evt.target);
+			//console.log(goal.x);
 
 			if (main.x > goal.x){ //has to go to left
 				moving_left = true;
@@ -253,7 +284,7 @@ function init(){
 
 	//Increase energy by delta
 	function updateEnergy(delta){
-		energy = energy + delta;
+		energy = Math.min(MAX_ENERGY, energy + delta); //energy never exceeds max
 		energyLabel.text = "Energy: "+energy;
 		stage.update();
 	}
@@ -265,17 +296,18 @@ function init(){
 		stage.update();
 	}
 
-	//Calculates energy loss
-	//Energy Loss = (dist)*(energy_dist_multiplier)*(tiredness)
-	//tiredness = log(1+MAX_ENERGY-energy)+1
-	function calc_travel_energy(dist){
-		tiredness = Math.log(1+ (MAX_ENERGY-energy)/MAX_ENERGY)+1; 
-		console.log(tiredness);
-		return dist * energy_dist_multiplier*tiredness;
-	}
+
+	// //Calculates energy loss
+	// //Energy Loss = (dist)*(energy_dist_multiplier)*(tiredness)
+	// //tiredness = log(1+MAX_ENERGY-energy)+1
+	// function calc_travel_energy(dist){
+	// 	tiredness = Math.log(1+ (MAX_ENERGY-energy)/MAX_ENERGY)+1; 
+	// 	console.log(tiredness);
+	// 	return dist * energy_dist_multiplier*tiredness;
+	// }
 
 	//gets location within canvas
-	function get_random_location(){
+	function get_random_location(){setTimeout(function() {}, 10);
 		var padding = 50; //stay at least 50 px away from each edge
 		x = Math.round(Math.random()*(stage.canvas.width-padding*2)+padding);
 		y = Math.round(Math.random()*(stage.canvas.height-padding*2)+padding);
@@ -297,12 +329,13 @@ function init(){
 		size = size || 50;
 		xPos = xPos || 100;
 		yPos = yPos || 100;
-		timeAlive = timeAlive || 5.0;
+		timeAlive = timeAlive || size;
 
 		circle.graphics.beginFill(color).drawCircle(0,0,size);
 		circle.x = xPos;
 		circle.y = yPos;
-		circle.timeAlive = 0.0; //TODO: Change for real game
+		circle.timeAlive = size; //TODO: Change for real game
+		circle.totalTimeAlive = size;
 
 		if(isProductive){ circle.isWork=true; }
 		else{ circle.isWork = false; }
@@ -310,16 +343,32 @@ function init(){
 		return circle;
 	};
 
-	function createSprite(spriteSheet, xPos, yPos, timeAlive, isProductive){
+	//create circle at random location (with random size?);
+	function createRandomCircle(color, size, timeAlive, isProductive){
+		var max_size = 80; //max bubble size
+		var min_size = 10;
+		//default args
+		size = size || Math.round( 	Math.random()*(max_size-min_size)+min_size); //size between 10 and 100
+		timeAlive = timeAlive || 5.0;
+
+		rand_coord = get_random_location();
+		x = rand_coord[0];
+		y = rand_coord[1];
+		return createCircle(color, size, x, y, size, isProductive);
+	}
+
+	function createSprite(spriteSheet, spriteName, xPos, yPos, timeAlive, isProductive){
 		//default args
 		xPos = xPos || 100;
 		yPos = yPos || 100;
 		timeAlive = timeAlive || 5.0;
 
-		var task = new createjs.Sprite(spriteSheet);
+
+		var task = new createjs.Sprite(spriteSheet, spriteName);
 		task.x = xPos;
 		task.y = yPos;
-		task.timeAlive = 0.0; //TODO: Change for real game
+		task.timeAlive = timeAlive; //TODO: Change for real game
+		task.totalTimeAlive = timeAlive;
 
 		if(isProductive){ task.isWork=true; }
 		else{ task.isWork = false; }
@@ -327,37 +376,22 @@ function init(){
 		return task;
 	};
 
-	//create circle at random location (with random size?);
-	function createRandomCircle(color, size, timeAlive, isProductive){
-		var max_size = 80; //max bubble size
-		var min_size = 10;
-		//default args
-		size = size || Math.round(Math.random()*(max_size-min_size)+min_size); //size between 10 and 100
-		timeAlive = timeAlive || 5.0;
-
-		rand_coord = get_random_location();
-		x = rand_coord[0];
-		y = rand_coord[1];
-		return createCircle(color, size, x, y, timeAlive, isProductive);
-	};
-
 	//create sprite at random location and given scale
-	function createRandomSprite(spriteSheet, scale, timeAlive, isProductive){
-		var max_scale = 3;
-		var min_scale = 0.5;
-		scale = scale || Math.round(Math.random()*(max_scale-min_scale)+min_scale);
+	function createRandomSprite(spriteSheet, spriteName, scale, timeAlive, isProductive){
+		var max_scale = 1.5;
+		var min_scale = 0.6;
+		scale = scale || Math.random()*(max_scale-min_scale)+min_scale;
 		
 		rand_coord = get_random_location();
 		x = rand_coord[0];
 		y = rand_coord[1];
 
-		task = createSprite(spriteSheet, x, y, timeAlive, isProductive);
+		task = createSprite(spriteSheet, spriteName, x, y, scale, isProductive);
 		task.scaleX = scale;
 		task.scaleY = scale;
 
 		return task;
 	};
-
 
 	//makes it so travel amount specified by "step_size" variable each time step
 	// x_inc = sqrt(step^2 / (1+slope)^2)

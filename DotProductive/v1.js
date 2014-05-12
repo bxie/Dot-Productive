@@ -1,6 +1,6 @@
 function init(){
-	var MAX_ENERGY = 100.0;
-	var TOTAL_TIME = 100.0;
+	var MAX_ENERGY = 50.0;
+	var TOTAL_TIME = 45.0;
 
     var stage = new createjs.Stage("demoCanvas");
 	var dragger = new createjs.Container();
@@ -8,7 +8,7 @@ function init(){
 	var	prev_time = getTimeInSec(); //time of previous tick
 	var score = 0;
 	//var energy = Math.random()*MAX_ENERGY/2 + MAX_ENERGY/50;
-	var energy = 100;
+	var energy = 50;
 	var energy_multiplier = 1.5; //At each second, energy drops this amount
 	var energy_dist_multiplier = 0.05; //for calculating energy loss from travel distance
 
@@ -162,6 +162,8 @@ function init(){
 			//console.log(prev_time);
 			if(energy<0.0 || prev_time>TOTAL_TIME){
 				console.log("OUT OF TIME OR ENERGY!");
+				scoreLabel.text = "Score: "+ score + "     ~OUT OF TIME OR ENERGY!~";
+				stage.update();
 				createjs.Ticker.setPaused(true)
 			}
 
@@ -211,6 +213,8 @@ function init(){
 			}
 			//end game: if main has arrived at bed 
 			if(end_game && goal==null){
+				scoreLabel.text = "Final Score: "+ score + "   Game Complete!";
+				stage.update();
 				createjs.Ticker.setPaused(true);
 			}
 
