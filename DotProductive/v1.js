@@ -8,7 +8,7 @@ function init(){
 	var	prev_time = getTimeInSec(); //time of previous tick
 	var score = 0;
 	//var energy = Math.random()*MAX_ENERGY/2 + MAX_ENERGY/50;
-	var energy = 75;
+	var energy = 100;
 	var energy_multiplier = 1.5; //At each second, energy drops this amount
 	var energy_dist_multiplier = 0.05; //for calculating energy loss from travel distance
 
