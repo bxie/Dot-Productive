@@ -1,5 +1,5 @@
 function init(){
-	var MAX_ENERGY = 50.0;
+	var MAX_ENERGY = 80.0;
 	var TOTAL_TIME = 45.0;
 
     var stage = new createjs.Stage("demoCanvas");
@@ -8,7 +8,7 @@ function init(){
 	var	prev_time = getTimeInSec(); //time of previous tick
 	var score = 0;
 	//var energy = Math.random()*MAX_ENERGY/2 + MAX_ENERGY/50;
-	var energy = 75;
+	var energy = 60;
 	var energy_multiplier = 1.5; //At each second, energy drops this amount
 	var energy_dist_multiplier = 0.05; //for calculating energy loss from travel distance
 
@@ -35,12 +35,21 @@ function init(){
 	timeLabel.x = 10;
 	timeLabel.y = 10;
 
+	//Progress Bar
+	var progress = new createjs.Shape();
+    // progress.alpha = 0.5;
+    var progressOutline = new createjs.Shape();
+    progress.graphics.beginFill("#82CA9D").drawRect(stage.canvas.width/2 - 150,stage.canvas.height-20,400*energy/MAX_ENERGY,20);
+    progressOutline.graphics.beginStroke("#555").drawRect(stage.canvas.width/2 - 150,stage.canvas.height-20,400,20);
+    stage.addChild(progress);
+    stage.addChild(progressOutline);
+
 	//Energy Label
-	energyLabel = stage.addChild(new createjs.Text("Energy: "+energy, "18px verdana", "#000"));
+	energyLabel = stage.addChild(new createjs.Text("Energy: "+(100*energy/MAX_ENERGY)+"%", "18px verdana", "#000"));
 	energyLabel.lineHeight = 15;
 	energyLabel.textBaseline = "top"
-	energyLabel.x = 180;
-	energyLabel.y = 10;
+	energyLabel.x = 580;
+	energyLabel.y = 480;
 
 	//Score Label
 	scoreLabel = stage.addChild(new createjs.Text("Score: "+score, "18px verdana", "#000"));
@@ -67,26 +76,26 @@ function init(){
 	*********************************************/
 
 
-    var red1 = createRandomSprite(playSpriteSheet, "party", null, 0.0, false);
-    var red2 = createRandomSprite(playSpriteSheet,"shop", null, 0.0, false);
-    var red3 = createRandomSprite(playSpriteSheet,"concert", null, 0.0, false);
-    var red4 = createRandomSprite(playSpriteSheet,"travel", null, 0.0, false);
-    var red5 = createRandomSprite(playSpriteSheet,"game", null, 0.0, false);
-    var red6 = createRandomSprite(playSpriteSheet,"game", null, 0.0, false);
-    var red7 = createRandomSprite(playSpriteSheet,"date", null, 0.0, false);
-    var red8 = createRandomSprite(playSpriteSheet,"coffee", null, 0.0, false);
-    var red9 = createRandomSprite(playSpriteSheet,"party", null, 0.0, false);
+    var red1 = createSprite(playSpriteSheet, "coffee", 1, 100,100, 0.0, false);
+    var red2 = createSprite(playSpriteSheet,"shop", .9, 600, 370, 0.0, false);
+    var red3 = createSprite(playSpriteSheet,"concert", 1.4, 490, 100, 0.0, false);
+    var red4 = createSprite(playSpriteSheet,"travel", 1.3, 210,360, 0.0, false);
+    var red5 = createSprite(playSpriteSheet,"game", 1,1100,300, 0.0, false);
+    var red6 = createSprite(playSpriteSheet,"game", 1,400,150, null, 0.0, false);
+    var red7 = createSprite(playSpriteSheet,"date", 1.2, 1010,40, 0.0, false);
+    var red8 = createSprite(playSpriteSheet,"coffee", .7, 800, 400, 0.0, false);
+    var red9 = createSprite(playSpriteSheet,"party", .8, 1100, 10, 0.0, false);
 
-    var blk1 = createRandomSprite(workSpriteSheet, "hw", null, 0.0, true);
-    var blk2 = createRandomSprite(workSpriteSheet, "pset",null, 0.0, true);
-    var blk3 = createRandomSprite(workSpriteSheet, "essay",null, 0.0, true);
-    var blk4 = createRandomSprite(workSpriteSheet, "email",null, 0.0, true);
-    var blk5 = createRandomSprite(workSpriteSheet, "project",null, 0.0, true);
-    var blk6 = createRandomSprite(workSpriteSheet, "pset2",null, 0.0, true);
-    var blk7 = createRandomSprite(workSpriteSheet, "email",null, 0.0, true);
-    var blk8 = createRandomSprite(workSpriteSheet, "email",null, 0.0, true);
-    var blk9 = createRandomSprite(workSpriteSheet, "email",null, 0.0, true);
-    var blk10 = createRandomSprite(workSpriteSheet, "preso",null, 0.0, true);
+    var blk1 = createSprite(workSpriteSheet, "hw", 1, 200, 90, 0.0, true);
+    var blk2 = createSprite(workSpriteSheet, "pset",1.1,650,175, 0.0, true);
+    var blk3 = createSprite(workSpriteSheet, "essay",1.4, 700, 100, 0.0, true);
+    var blk4 = createSprite(workSpriteSheet, "email",.8, 800, 275, 0.0, true);
+    var blk5 = createSprite(workSpriteSheet, "project",1.1, 950,355, 0.0, true);
+    var blk6 = createSprite(workSpriteSheet, "pset2", .7,1010,250, 0.0, true);
+    var blk7 = createSprite(workSpriteSheet, "email",.6, 300, 200, 0.0, true);
+    var blk8 = createSprite(workSpriteSheet, "email",.7, 500, 250, 0.0, true);
+    var blk9 = createSprite(workSpriteSheet, "email",.6, 150, 280, 0.0, true);
+    var blk10 = createSprite(workSpriteSheet, "preso",1.2, 330,300, 0.0, true);
 
 
  
@@ -124,12 +133,12 @@ function init(){
 	stage.mouseMoveOutside = true;
 
 	//Sprite we control
-	var main = createSprite(userSpriteSheet, "user", 40, stage.canvas.height/2);
+	var main = createSprite(userSpriteSheet, "user", 1, 40, stage.canvas.height/2);
 	main.alpha = 0.5;
 	stage.addChild(main);
 
 	//end sprite
- 	var bed = createSprite(sleepSpriteSheet, "sleep", stage.canvas.width-40, stage.canvas.height/2);
+ 	var bed = createSprite(sleepSpriteSheet, "sleep", 1, stage.canvas.width-40, stage.canvas.height/2);
 	var bed_container = new createjs.Container();
 	bed_container.addChild(bed);
 
@@ -158,6 +167,12 @@ function init(){
 	});
 	stage.addChild(bed_container);
 
+	// ADD PROGRESS BAR
+	// var progress = new createjs.Shape(); // Remember to define the progress variable at the top!
+ //    progress.graphics.beginStroke("#C33").drawRect(stage.canvas.width/2 - 400/2,stage.canvas.height-20,400,20);
+ //    stage.addChild(progress);
+
+    
     stage.update();
 
     createjs.Ticker.on("tick", tick);
@@ -234,7 +249,8 @@ function init(){
 			gameTime = gameTime - delta;
 			energy = energy - delta*energy_multiplier;
 			timeLabel.text = "Time Left: "+ Math.round(gameTime);
-			energyLabel.text = "Energy: "+Math.round(energy);
+			energyLabel.text = "Energy: "+Math.round((100*energy/MAX_ENERGY))+"%";
+			updateEnergyBar();
 
 			stage.update(event);
 		}
@@ -285,8 +301,25 @@ function init(){
 	//Increase energy by delta
 	function updateEnergy(delta){
 		energy = Math.min(MAX_ENERGY, energy + delta); //energy never exceeds max
-		energyLabel.text = "Energy: "+energy;
+		energyLabel.text = "Energy: "+Math.round(100*energy/MAX_ENERGY) + "%";
+		updateEnergyBar();
 		stage.update();
+	}
+
+	// Update the Energy progress bar
+	function updateEnergyBar(){
+		// Update Progress Bar
+		progress.graphics.clear();
+		if(energy/MAX_ENERGY < 0.15) {
+    		progress.graphics.beginFill("#F9997c").drawRect(stage.canvas.width/2 - 150,stage.canvas.height-20,400*energy/MAX_ENERGY,20);
+		} else {
+			if(energy/MAX_ENERGY <= 0.33) {
+				progress.graphics.beginFill("#FFF99C").drawRect(stage.canvas.width/2 - 150,stage.canvas.height-20,400*energy/MAX_ENERGY,20);
+		} else {
+			progress.graphics.beginFill("#82CA9D").drawRect(stage.canvas.width/2 - 150,stage.canvas.height-20,400*energy/MAX_ENERGY,20);
+		}
+	}
+
 	}
 
 	//adds 1 to score and updates label
@@ -357,11 +390,13 @@ function init(){
 		return createCircle(color, size, x, y, size, isProductive);
 	}
 
-	function createSprite(spriteSheet, spriteName, xPos, yPos, timeAlive, isProductive){
+	function createSprite(spriteSheet, spriteName, scale, xPos, yPos, timeAlive, isProductive){
 		//default args
 		xPos = xPos || 100;
 		yPos = yPos || 100;
 		timeAlive = timeAlive || 5.0;
+		scale = scale || 1;
+		timeAlive = scale; // This could be changed!
 
 
 		var task = new createjs.Sprite(spriteSheet, spriteName);
@@ -369,6 +404,8 @@ function init(){
 		task.y = yPos;
 		task.timeAlive = timeAlive; //TODO: Change for real game
 		task.totalTimeAlive = timeAlive;
+		task.scaleX = scale;
+		task.scaleY = scale;
 
 		if(isProductive){ task.isWork=true; }
 		else{ task.isWork = false; }
@@ -386,11 +423,7 @@ function init(){
 		x = rand_coord[0];
 		y = rand_coord[1];
 
-		task = createSprite(spriteSheet, spriteName, x, y, scale, isProductive);
-		task.scaleX = scale;
-		task.scaleY = scale;
-
-		return task;
+		return createSprite(spriteSheet, spriteName, scale, x, y, scale, isProductive);
 	};
 
 	//makes it so travel amount specified by "step_size" variable each time step
