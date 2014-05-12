@@ -29,21 +29,21 @@ function init(){
 	*********************************************/
 
 	//Time Label
-	timeLabel = stage.addChild(new createjs.Text("Time Left: "+prev_time, "14px monospace", "#000"));
+	timeLabel = stage.addChild(new createjs.Text("Time Left: "+prev_time, "18px verdana", "#000"));
 	timeLabel.lineHeight = 15;
 	timeLabel.textBaseline = "top"
 	timeLabel.x = 10;
 	timeLabel.y = 10;
 
 	//Energy Label
-	energyLabel = stage.addChild(new createjs.Text("Energy: "+energy, "14px monospace", "#000"));
+	energyLabel = stage.addChild(new createjs.Text("Energy: "+energy, "18px verdana", "#000"));
 	energyLabel.lineHeight = 15;
 	energyLabel.textBaseline = "top"
 	energyLabel.x = 180;
 	energyLabel.y = 10;
 
 	//Score Label
-	scoreLabel = stage.addChild(new createjs.Text("Score: "+score, "14px monospace", "#000"));
+	scoreLabel = stage.addChild(new createjs.Text("Score: "+score, "18px verdana", "#000"));
 	scoreLabel.lineHeight = 15;
 	scoreLabel.textBaseline = "top"
 	scoreLabel.x = 350;
