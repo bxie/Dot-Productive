@@ -3,7 +3,7 @@ var height = 500;
 
 user_spritedata = {images: ["user32.png"], frames:{width:32, height:32},
 	animations: {user:0}};
-sleep_spritedata = {images: ["sleep32.png"], frames:{width:32, height:32},
+sleep_spritedata = {images: ["sleep32.jpg"], frames:{width:32, height:32},
 	animations: {sleep:0}};
 work_spritedata = {images: ["work_NEW.png"], frames:{width:100, height:100},
 	animations: {econ:0, speech:1, hw:2, essay:3, pset:4, preso:5, pset2:6, thing:7, email:8, project:9}};
