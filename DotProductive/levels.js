@@ -333,6 +333,15 @@ function next_level(){
 	start_level(lvl.circles, lvl.time, lvl.start_time, lvl.max_energy);
 };
 
+function replay_level(){
+	current_level-=1;
+	next_level();
+}
+function prev_level(){
+	current_level = Math.max(1, current_level-2);
+	next_level();
+}
+
 function create_random_level(){
 	lvl = {
 		circles:{
