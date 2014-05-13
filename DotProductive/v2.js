@@ -1,19 +1,18 @@
 var width = 1200;
 var height = 500;
-var active_level;
 
 user_spritedata = {images: ["user32.png"], frames:{width:32, height:32},
-		animations: {user:0}};
-    sleep_spritedata = {images: ["sleep32.png"], frames:{width:32, height:32},
-		animations: {sleep:0}};
-    work_spritedata = {images: ["work_NEW.png"], frames:{width:100, height:100},
-		animations: {econ:0, speech:1, hw:2, essay:3, pset:4, preso:5, pset2:6, thing:7, email:8, project:9}};
-    play_spritedata = {images: ["sofuckinghotitwillburnyourhand.png"], frames:{width:100, height:100},
-		animations: {coffee:0, concert:1, date:2, shop:3, party:4, game:5, travel:6}};
-    var userSpriteSheet  = new createjs.SpriteSheet(user_spritedata);
-    var sleepSpriteSheet  = new createjs.SpriteSheet(sleep_spritedata);
-    var workSpriteSheet  = new createjs.SpriteSheet(work_spritedata);
-    var playSpriteSheet  = new createjs.SpriteSheet(play_spritedata);
+	animations: {user:0}};
+sleep_spritedata = {images: ["sleep32.png"], frames:{width:32, height:32},
+	animations: {sleep:0}};
+work_spritedata = {images: ["work_NEW.png"], frames:{width:100, height:100},
+	animations: {econ:0, speech:1, hw:2, essay:3, pset:4, preso:5, pset2:6, thing:7, email:8, project:9}};
+play_spritedata = {images: ["sofuckinghotitwillburnyourhand.png"], frames:{width:100, height:100},
+	animations: {coffee:0, concert:1, date:2, shop:3, party:4, game:5, travel:6}};
+var userSpriteSheet  = new createjs.SpriteSheet(user_spritedata);
+var sleepSpriteSheet  = new createjs.SpriteSheet(sleep_spritedata);
+var workSpriteSheet  = new createjs.SpriteSheet(work_spritedata);
+var playSpriteSheet  = new createjs.SpriteSheet(play_spritedata);
 
 /*********************************************
 LEVELS HERE
@@ -111,9 +110,6 @@ level_order = {
 };
 
 function start_level(lvl, circles, time, total_energy, start_energy){
-	active_level = lvl;
-
-	lvl.isActive = true;
 
 	current_level +=1;
 	console.log("Start energy: "+ start_energy);
@@ -178,87 +174,12 @@ function start_level(lvl, circles, time, total_energy, start_energy){
 	ADDING TASKS
 	*********************************************/
 
-	
 
-// ##level 3
-
- //    var red1 = createSprite(playSpriteSheet, "coffee", .5, 1000, 100, 0.0, false);
- //    var red2 = createSprite(playSpriteSheet,"shop", .5, 600, 100, 0.0, false);
- //    var red3 = createSprite(playSpriteSheet,"concert", .5, 400, 100, 0.0, false);
- //    var red4 = createSprite(playSpriteSheet,"travel", .5, 100, 100, 0.0, false);
-
- //    var blk1 = createSprite(workSpriteSheet, "hw", 1, 200, 90, 0.0, true);
- //    var blk2 = createSprite(workSpriteSheet, "pset",1.1,650,175, 0.0, true);
- //    var blk3 = createSprite(workSpriteSheet, "essay",1.4, 900, 250, 0.0, true);
- //    var blk4 = createSprite(workSpriteSheet, "email",.5, 100, 400, 1.0, true);
- //    var blk5 = createSprite(workSpriteSheet, "project",2, 400, 250, 3.0, true);
- //    var blk6 = createSprite(workSpriteSheet, "pset2", .7,1050, 250, 0.0, true);
- //    var blk7 = createSprite(workSpriteSheet, "email",.5, 300, 500, 0.0, false);
- //    var blk8 = createSprite(workSpriteSheet, "email",.5, 900, 400, 2.0, true);
- //    var blk9 = createSprite(workSpriteSheet, "email",.5, 1100, 400, 0.0, true);
- //    var blk10 = createSprite(workSpriteSheet, "preso",1.2, 330, 300, 0.0, true);
-	// shapes = {
- //    	r1 : red1,
- //    	r2 : red2,
- //    	r3 : red3,
- //    	r4 : red4,
- //    	b1 : blk1,
- //    	b2 : blk2,
- //    	b3 : blk3,
- //    	b4 : blk4,
- //    	b5 : blk5,
- //    	b6 : blk6,
- //    	b7 : blk7,
- //    	b8 : blk8,
- //    	b9 : blk9,
- //    	b10 : blk10
- //    };
-
-
-
-
-// ##level 2
-
-    // var red1 = createSprite(playSpriteSheet, "coffee", .8, 34,80, 0.0, false);
-    // var red2 = createSprite(playSpriteSheet,"shop", .9, 600, 370, 0.0, false);
-    // var red3 = createSprite(playSpriteSheet,"concert", 1, 490, 100, 0.0, false);
-    // var red4 = createSprite(playSpriteSheet,"travel", 1.3, 210, 360, 0.0, false);
-    // var red5 = reateSprite(playSpriteSheet,"game", 1,400,150, null, 0.0, false);
-    // var red6 = createSprite(playSpriteSheet,"coffee", .7, 850, 400, 0.0, false);
-
-    // var blk1 = createSprite(workSpriteSheet, "hw", 1, 200, 90, 0.0, true);
-    // var blk2 = createSprite(workSpriteSheet, "pset",1.1,1000, 375, 0.0, true);
-    // var blk3 = createSprite(workSpriteSheet, "essay",1.4, 700, 100, 0.0, true);
-    // var blk4 = createSprite(workSpriteSheet, "email",.5, 600, 100, 0.0, true);
-    // var blk5 = createSprite(workSpriteSheet, "project", 2, 700, 240, 0.0, true);
-    // var blk6 = createSprite(workSpriteSheet, "pset2", .7,1010, 250, 0.0, true);
-    // var blk7 = createSprite(workSpriteSheet, "email",.5, 300, 100, 0.0, true);
-    // var blk8 = createSprite(workSpriteSheet, "email",.5, 100, 250, 0.0, true);
-    // var blk9 = createSprite(workSpriteSheet, "email",.5, 150, 280, 0.0, true);
-    // var blk10 = createSprite(workSpriteSheet, "preso",1.2, 330,300, 0.0, true);
-    // var blk11 = createSprite(workSpriteSheet, "hw", 1.5, 500, 240, 0.0, true);
-    // shapes = {
-    // 	r1 : red1,
-    // 	r2 : red2,
-    // 	r3 : red3,
-    // 	r4 : red4,
-    // 	r5 : red5,
-    // 	r6 : red6,
-    // 	b1 : blk1,
-    // 	b2 : blk2,
-    // 	b3 : blk3,
-    // 	b4 : blk4,
-    // 	b5 : blk5,
-    // 	b6 : blk6,
-    // 	b7 : blk7,
-    // 	b8 : blk8,
-    // 	b9 : blk9,
-    // 	b10 : blk10,
-    // 	b11 : blk11
-    // };
-    // console.log(shapes[1]);
 
     for(ref in circles){
+    	circles[ref].scaleX = circles[ref].startScale;
+    	circles[ref].scaleY = circles[ref].startScale;
+    	circles[ref].timeAlive = circles[ref].totalTimeAlive;
     	temp = createClickable(circles[ref]);
     	lvl.stage.addChild(temp);
     }
@@ -342,12 +263,6 @@ function start_level(lvl, circles, time, total_energy, start_energy){
 	
 	//called every time step
 	function tick(event) {
-
-
-		if (!lvl.isActive) {
-			console.log("NOT ACTIVE");
-			return;}
-		//console.log(createjs.Ticker.getPaused());
 
 		//paused if game ends (get to bed, out of energy, time)
 		if(createjs.Ticker.getPaused()==false){ // replace with createjs.Ticker.getPaused()==true
@@ -503,24 +418,8 @@ function start_level(lvl, circles, time, total_energy, start_energy){
 	}
 
 
-	// //Calculates energy loss
-	// //Energy Loss = (dist)*(energy_dist_multiplier)*(tiredness)
-	// //tiredness = log(1+MAX_ENERGY-energy)+1
-	// function calc_travel_energy(dist){
-	// 	tiredness = Math.log(1+ (MAX_ENERGY-energy)/MAX_ENERGY)+1; 
-	// 	console.log(tiredness);
-	// 	return dist * energy_dist_multiplier*tiredness;
-	// }
 
-	//gets location within canvas
-	function get_random_location(){setTimeout(function() {}, 10);
-		var padding = 50; //stay at least 50 px away from each edge
-		x = Math.round(Math.random()*(lvl.stage.canvas.width-padding*2)+padding);
-		y = Math.round(Math.random()*(lvl.stage.canvas.height-padding*2)+padding);
-		// console.log ([x,y]);
-		return [x,y]
-
-	};
+	
 	/**
 	* Create filled circle with given color, size, at given location
 	* color: string with circle color ("red", "black")
@@ -549,35 +448,7 @@ function start_level(lvl, circles, time, total_energy, start_energy){
 		return circle;
 	};
 
-	//create circle at random location (with random size?);
-	function createRandomCircle(color, size, timeAlive, isProductive){
-		var max_size = 80; //max bubble size
-		var min_size = 10;
-		//default args
-		size = size || Math.round( 	Math.random()*(max_size-min_size)+min_size); //size between 10 and 100
-		timeAlive = timeAlive || 5.0;
-
-		rand_coord = get_random_location();
-		x = rand_coord[0];
-		y = rand_coord[1];
-		return createCircle(color, size, x, y, size, isProductive);
-	}
-
 	
-
-	//create sprite at random location and given scale
-	function createRandomSprite(spriteSheet, spriteName, scale, timeAlive, isProductive){
-		var max_scale = 1.5;
-		var min_scale = 0.6;
-		scale = scale || Math.random()*(max_scale-min_scale)+min_scale;
-		
-		rand_coord = get_random_location();
-		x = rand_coord[0];
-		y = rand_coord[1];
-
-		return createSprite(spriteSheet, spriteName, scale, x, y, scale, isProductive);
-	};
-
 	//makes it so travel amount specified by "step_size" variable each time step
 	// x_inc = sqrt(step^2 / (1+slope)^2)
 	function calcXInc(){
@@ -597,7 +468,6 @@ function calcDistance(startX, startY, endX, endY){
 //
 function next_level(){
 	console.log('next level');
-	active_level.isActive = false;
 	// current_level+=1;
 	//if level is defined
 	// lvl = create_random_level();
@@ -605,6 +475,8 @@ function next_level(){
 	createjs.Ticker.removeAllEventListeners();
 	if (current_level<=max_level){
 		level = level_order[current_level];
+	} else {
+		level = create_random_level();
 	}
 	start_level(level, level.circles, level.time, level.max_energy, level.start_energy);
 };
@@ -619,31 +491,92 @@ function prev_level(){
 }
 
 function createSprite(spriteSheet, spriteName, scale, xPos, yPos, value, isProductive){
-		//default args
-		xPos = xPos || 100;
-		yPos = yPos || 100;
-		scale = scale || 1;
-		timeAlive = scale; // This could be changed!
-		value = value || 1;
+	//default args
+	xPos = xPos || 100;
+	yPos = yPos || 100;
+	scale = scale || 1;
+	timeAlive = scale; // This could be changed!
+	value = value || 1;
 
+	var task = new createjs.Sprite(spriteSheet, spriteName);
+	task.x = xPos;
+	task.y = yPos;
 
-		var task = new createjs.Sprite(spriteSheet, spriteName);
-		task.x = xPos;
-		task.y = yPos;
+	task.timeAlive = timeAlive; //TODO: Change for real game
+	task.totalTimeAlive = timeAlive;
+	task.startScale = scale;
+	task.scaleX = scale;
+	task.scaleY = scale;
+	task.value = value;
 
-		// task.goalX = x + ;
-		// task.goalY = y;
-		task.timeAlive = timeAlive; //TODO: Change for real game
-		task.totalTimeAlive = timeAlive;
-		task.scaleX = scale;
-		task.scaleY = scale;
-		task.value = value;
+	if(isProductive){ task.isWork=true; }
+	else{ task.isWork = false; }
 
-		if(isProductive){ task.isWork=true; }
-		else{ task.isWork = false; }
+	return task;
+};
 
-		return task;
+function create_random_level(){
+	lvl = {
+		circles:{
+			red1 : createRandomSprite(playSpriteSheet, "coffee", false),
+		     red2 : createRandomSprite(playSpriteSheet,"shop", false),
+		     red3 : createRandomSprite(playSpriteSheet,"concert", false),
+		     red4 : createRandomSprite(playSpriteSheet,"travel", false),
+		     red5 : createRandomSprite(playSpriteSheet,"game", false),
+		     red6 : createRandomSprite(playSpriteSheet,"coffee",  false),
+
+		     blk1 : createRandomSprite(workSpriteSheet, "hw", true),
+		     blk2 : createRandomSprite(workSpriteSheet, "pset", true),
+		     blk3 : createRandomSprite(workSpriteSheet, "essay", true),
+		     blk4 : createRandomSprite(workSpriteSheet, "email",true),
+		     blk5 : createRandomSprite(workSpriteSheet, "project", true),
+		     blk6 : createRandomSprite(workSpriteSheet, "pset2",  true),
+		     blk7 : createRandomSprite(workSpriteSheet, "email",true),
+		     blk8 : createRandomSprite(workSpriteSheet, "email",true),
+		     blk9 : createRandomSprite(workSpriteSheet, "email",true),
+		     blk10 : createRandomSprite(workSpriteSheet, "preso",true),
+		     blk11 : createRandomSprite(workSpriteSheet, "hw", true),
+		},
+		time: 45,
+		start_energy: 60,
+		max_energy: 80
 	};
+	return lvl;
+};
+
+//create sprite at random location and random scale.
+function createRandomSprite(spriteSheet, spriteName, isProductive){
+	var max_scale = 1.5;
+	var min_scale = 0.6;
+	scale = Math.random()*(max_scale-min_scale)+min_scale;
+	var value = 0;
+	if (isProductive) {
+		if (scale>1) {
+			value = 3;
+		} else if (scale<.75) {
+			value = 1;
+		} else {
+			value = 2;
+		}
+	}
+	
+	rand_coord = get_random_location();
+	x = rand_coord[0];
+	y = rand_coord[1];
+
+	return createSprite(spriteSheet, spriteName, scale, x, y, value, isProductive);
+};
+
+//gets location within canvas
+function get_random_location(){setTimeout(function() {}, 10);
+	var padding = 100; //stay at least 50 px away from each edge
+	x = Math.round(Math.random()*(width-padding*2)+padding);
+	y = Math.round(Math.random()*(height-padding*2)+padding);
+	// console.log ([x,y]);
+	return [x,y]
+
+};
+
 /**
 Next Steps:
 
