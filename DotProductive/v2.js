@@ -39,7 +39,7 @@ function init(){
 	var progress = new createjs.Shape();
     // progress.alpha = 0.5;
     var progressOutline = new createjs.Shape();
-    progress.graphics.beginFill("#82CA9D").drawRect(stage.canvas.width/2 - 150,stage.canvas.height-20,400*energy/MAX_ENERGY,20);
+    progress.graphics.beginFill("#3c855c").drawRect(stage.canvas.width/2 - 150,stage.canvas.height-20,400*energy/MAX_ENERGY,20);
     progressOutline.graphics.beginStroke("#555").drawRect(stage.canvas.width/2 - 150,stage.canvas.height-20,400,20);
     stage.addChild(progress);
     stage.addChild(progressOutline);
@@ -62,9 +62,9 @@ function init(){
 		animations: {user:0}};
     sleep_spritedata = {images: ["sleep32.png"], frames:{width:32, height:32},
 		animations: {sleep:0}};
-    work_spritedata = {images: ["work.jpg"], frames:{width:100, height:100},
+    work_spritedata = {images: ["work_NEW.png"], frames:{width:100, height:100},
 		animations: {econ:0, speech:1, hw:2, essay:3, pset:4, preso:5, pset2:6, thing:7, email:8, project:9}};
-    play_spritedata = {images: ["fun.jpg"], frames:{width:100, height:100},
+    play_spritedata = {images: ["fun_NEW.png"], frames:{width:100, height:100},
 		animations: {concert:0, travel:1, shop:2, game:3, date:4, coffee:5, party:6}};
     var userSpriteSheet  = new createjs.SpriteSheet(user_spritedata);
     var sleepSpriteSheet  = new createjs.SpriteSheet(sleep_spritedata);
@@ -314,9 +314,9 @@ function init(){
     		progress.graphics.beginFill("#F9997c").drawRect(stage.canvas.width/2 - 150,stage.canvas.height-20,400*energy/MAX_ENERGY,20);
 		} else {
 			if(energy/MAX_ENERGY <= 0.33) {
-				progress.graphics.beginFill("#FFF99C").drawRect(stage.canvas.width/2 - 150,stage.canvas.height-20,400*energy/MAX_ENERGY,20);
+				progress.graphics.beginFill("#ffec6c").drawRect(stage.canvas.width/2 - 150,stage.canvas.height-20,400*energy/MAX_ENERGY,20);
 		} else {
-			progress.graphics.beginFill("#82CA9D").drawRect(stage.canvas.width/2 - 150,stage.canvas.height-20,400*energy/MAX_ENERGY,20);
+			progress.graphics.beginFill("#3c855c").drawRect(stage.canvas.width/2 - 150,stage.canvas.height-20,400*energy/MAX_ENERGY,20);
 		}
 	}
 
