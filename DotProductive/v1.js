@@ -147,6 +147,12 @@ function init(){
 	});
 	stage.addChild(bed_container);
 
+	// ADD PROGRESS BAR
+	var progress = new createjs.Shape(); // Remember to define the progress variable at the top!
+    progress.graphics.beginStroke("#C33").drawRect(0,0,100,20);
+    stage.addChild(progress);
+
+
     stage.update();
 
     createjs.Ticker.on("tick", tick);

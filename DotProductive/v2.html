@@ -5,9 +5,13 @@
     <script src="v2.js"> </script>
 </head>
 <img src="dotproductive.png" alt="The Dot Productivity Game">
-<body onload="init()">
+<body onload="start_level(l1, l1.circles, l1.time, l1.max_energy, l1.start_energy)">
     <canvas id="demoCanvas" width="1200" height="500" style="background-color: white;border-style:solid;border-color:#888">
         alternative content
     </canvas>
+    </br>
+    <button type="button" id="btn" onclick="prev_level()"> Play Previous Level</button>
+	<button type="button" id="btn" onclick="replay_level()">Restart Current Level</button>
+	<button type="button" id="btn" onclick="next_level()">Play Next Level</button>
 </body>
 </html>

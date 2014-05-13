@@ -65,6 +65,7 @@ function start_level(circles, time, total_energy, start_energy){
 	console.log('new level!');
 
 	current_level +=1;
+	console.log("Current Level: "+ current_level);
 
 	//default
 	if(!time) time = 45;
@@ -325,6 +326,7 @@ function start_level(circles, time, total_energy, start_energy){
 //
 function next_level(){
 	console.log('next level');
+	// current_level+=1;
 	//if level is defined
 	lvl = create_random_level();
 	if (current_level<=max_level){
